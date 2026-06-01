@@ -249,79 +249,6 @@ document.addEventListener('keydown', (e) => {
 });
 
 
-
-// -----------------------------------------------
-// -----------------------------------------------
-// -----------------------------------------------
-// script de generador de noticias
-/*
-async function cargarNoticias() {
-
-    const response = await fetch(
-        "https://still-mountain-27bb.2143emilio.workers.dev"
-    );
-
-    const noticias = await response.json();
-
-    let html = "";
-
-    noticias.forEach(noticia => {
-
-        const fecha = new Date(noticia.fecha)
-            .toLocaleDateString("es-EC");
-
-        html += `
-        <div class="col-12 col-md-6 col-xl-4">
-            <div class="card bg-dark text-light h-100 border-secondary shadow">
-    
-                ${noticia.imagen ? `
-                    <img src="${noticia.imagen}"
-                        class="card-img-top"
-                        alt="${noticia.titulo}"
-                        style="height:220px;object-fit:cover;">
-                ` : ''}
-    
-                <div class="card-body">
-    
-                    <h5 class="card-title">
-                        ${noticia.titulo}
-                    </h5>
-    
-                    <small class="text-secondary">
-                        <i class="fas fa-calendar-alt"></i>
-                        ${fecha}
-                    </small>
-    
-                    <hr>
-    
-                    <a href="${noticia.enlace}"
-                    target="_blank"
-                    class="btn btn-warning">
-    
-                        <i class="fas fa-external-link-alt"></i>
-                        Leer noticia
-    
-                    </a>
-    
-                </div>
-            </div>
-
-        </div>`;
-    });
-
-    document.getElementById(
-        "contenedorNoticias"
-    ).innerHTML = html;
-}
-
-*/
-
-// -----------------------------------------------
-// -----------------------------------------------
-// -----------------------------------------------
-
-
-
 // -----------------------------------------------
 // funcion para mostrar y ocultar 
 // MOSTRAR NOTICIAS
@@ -407,8 +334,20 @@ async function cargarNoticias() {
         const noticias = await respuesta.json();
         
         const zonaNoticias = document.getElementById("zonaNoticias");
+
+
+        // --- EL ESCUDO DE PROTECCIÓN ---
+        if (!zonaNoticias) {
+            // Si no encuentra el div en pantalla, sale de la función sin romper nada
+            return; 
+        }
+        // -------------------------------
+
         // Limpiamos el mensaje de "Cargando..."
-        zonaNoticias.innerHTML = ""; 
+        zonaNoticias.innerHTML = "";
+
+        // Limpiamos el mensaje de "Cargando..."
+        //zonaNoticias.innerHTML = ""; 
 
         // 1. Agrupar las noticias por categoría utilizando un Objeto
         const noticiasAgrupadas = {};
@@ -482,7 +421,7 @@ async function cargarNoticias() {
 }
 
 // Ejecutar la función apenas cargue la página
-document.addEventListener("DOMContentLoaded", cargarNoticias);
+// document.addEventListener("DOMContentLoaded", cargarNoticias);
 
 
 
