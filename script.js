@@ -6,7 +6,7 @@ let reconnectAttempts = 0;
 const maxReconnectAttempts = 5;
 let reconnectTimeout = null;
 
-const streamUrl = "https://usa3.lhdserver.es:8197/stream";
+const streamUrl = "https://sapircast.caster.fm:16498/JekUW?token=5dcb4a3924a4cdbfcec8992b318df2d2";
 const playButton = document.getElementById('playButton');
 const playIcon = document.getElementById('playIcon');
 const volumeSlider = document.getElementById('volumeSlider');
