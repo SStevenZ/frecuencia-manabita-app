@@ -6,7 +6,7 @@ let reconnectAttempts = 0;
 const maxReconnectAttempts = 5;
 let reconnectTimeout = null;
 
-const streamUrl = "http://5.135.154.72:24716/;?G2pxpFroQzSM-jubDnhF8A_JWEiKH80QkGn4mrrfgEYloFAI";
+const streamUrl = "http://5.135.154.72:24716/;?YGq6pG7paR5rSc6-3sSNo3VFARtw9uC3KORewpPwCZ5K3hC-";
 const playButton = document.getElementById('playButton');
 const playIcon = document.getElementById('playIcon');
 const volumeSlider = document.getElementById('volumeSlider');
