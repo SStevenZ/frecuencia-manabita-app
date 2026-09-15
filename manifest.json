@@ -1,9 +1,9 @@
-
 {
   "name": "Frecuencia Manabita",
   "short_name": "Frecuencia Manabita",
   "description": "Escucha Frecuencia Manabita en vivo",
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0f0f0f",
   "theme_color": "#c6b800",
