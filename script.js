@@ -6,7 +6,7 @@ let reconnectAttempts = 0;
 const maxReconnectAttempts = 5;
 let reconnectTimeout = null;
 
-const streamUrl = "http://78.129.241.110:3825/stream";
+const streamUrl = "https://corsproxy.io/?url=http://78.129.241.110:3825/stream asi";
 const playButton = document.getElementById('playButton');
 const playIcon = document.getElementById('playIcon');
 const volumeSlider = document.getElementById('volumeSlider');
@@ -69,6 +69,9 @@ function togglePlay() {
 }
 
 function playAudio() {
+    // TRUCO PARA PWA: Forzamos al reproductor a cargar el flujo de audio 100% en vivo antes de sonar
+    audio.src = streamUrl;
+    
     audio.play().then(() => {
         playIcon.classList.replace('fa-play', 'fa-pause');
         reconnectAttempts = 0;
