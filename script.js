@@ -6,7 +6,7 @@ let reconnectAttempts = 0;
 const maxReconnectAttempts = 5;
 let reconnectTimeout = null;
 
-const streamUrl = "https://s12.myradiostream.com:20014/stream?nocache=1789708391906";
+const streamUrl = "http://78.129.241.110:3825/stream";
 const playButton = document.getElementById('playButton');
 const playIcon = document.getElementById('playIcon');
 const volumeSlider = document.getElementById('volumeSlider');
