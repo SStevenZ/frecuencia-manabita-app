@@ -6,7 +6,7 @@ let reconnectAttempts = 0;
 const maxReconnectAttempts = 5;
 let reconnectTimeout = null;
 
-const streamUrl = "https://sapircast.caster.fm:16498/JekUW?token=518b95424f2406d618595ac1d255ec8b";
+const streamUrl = "https://s12.myradiostream.com:20014/stream?nocache=1789707991440";
 const playButton = document.getElementById('playButton');
 const playIcon = document.getElementById('playIcon');
 const volumeSlider = document.getElementById('volumeSlider');
