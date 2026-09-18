@@ -6,7 +6,7 @@ let reconnectAttempts = 0;
 const maxReconnectAttempts = 5;
 let reconnectTimeout = null;
 
-const streamUrl = "http://5.135.154.72:24716/;?YGq6pG7paR5rSc6-3sSNo3VFARtw9uC3KORewpPwCZ5K3hC-";
+const streamUrl = "https://sapircast.caster.fm:16498/JekUW?token=518b95424f2406d618595ac1d255ec8b";
 const playButton = document.getElementById('playButton');
 const playIcon = document.getElementById('playIcon');
 const volumeSlider = document.getElementById('volumeSlider');
