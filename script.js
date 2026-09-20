@@ -431,168 +431,225 @@ async function cargarNoticias() {
 
 // --------------------------------------------------------
 // --------------------------------------------------------
-
-function mostrarAjustes() {
-    // 1. Ocultamos el reproductor de radio central
-    document.getElementById("radio").style.display = "none";
-    
-    // 2. Inyectamos la nueva estructura con las 4 funciones solicitadas
-    const contenedor = document.getElementById("contenido");
-    contenedor.innerHTML = `
-        <div class="container py-4 text-white" style="margin-bottom: 100px;">
-            <h3 class="text-warning mb-4">
-                <i class="fas fa-sliders-h me-2"></i> Ajustes de la Estación
-            </h3>
-            
-            <div class="row g-4">
-                <div class="col-12 col-md-6">
-                    <div class="card bg-dark border-secondary text-white h-100 shadow-lg">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title text-warning mb-3">
-                                <i class="fas fa-broadcast-tower me-2"></i> Transmisión de Audio
-                            </h5>
-
-                            <div class="mt-auto p-3 bg-opacity-10 bg-warning border border-warning rounded">
-                                <h6 class="text-warning mb-1 small fw-bold">
-                                    <i class="fas fa-exclamation-triangle me-1"></i> ¿Problemas con el audio?
-                                </h6>
-                                <p class="text-light mb-2" style="font-size: 0.85rem;">
-                                    Si la señal se congeló o no se escucha, fuerza una reconexión inmediata.
-                                </p>
-                                <button class="btn btn-warning btn-sm w-100 fw-bold" onclick="reportarCaidaSenal(this)">
-                                    <i class="fas fa-sync-alt me-1"></i> Reconectar Señal
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                    <div class="card bg-dark border-secondary text-white h-100 shadow-lg">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title text-warning mb-3">
-                                <i class="fas fa-bolt me-2"></i> Rendimiento y Noticias
-                            </h5>
-
-                            <div class="mt-auto p-3 bg-opacity-10 bg-danger border border-danger rounded">
-                                <h6 class="text-danger mb-1 small fw-bold">
-                                    <i class="fas fa-trash-alt me-1"></i> Optimización de espacio
-                                </h6>
-                                <p class="text-light mb-2" style="font-size: 0.85rem;">
-                                    Limpia las imágenes y datos temporales guardados por la PWA en tu dispositivo.
-                                </p>
-                                <button class="btn btn-outline-danger btn-sm w-100 fw-bold" onclick="limpiarCacheApp(this)">
-                                    <i class="fas fa-broom me-1"></i> Limpiar Caché y Datos
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <div class="card bg-dark border-secondary text-white shadow-lg text-center py-4">
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <i class="fas fa-radio fa-3x text-warning"></i>
-                            </div>
-                            <h4 class="card-title text-warning mb-2">Radio Station</h4>
-                            <p class="text-muted small mb-3">Señal Interactiva v1.0.0 — Ecuador</p>
-                            
-                            <p class="card-text mx-auto text-light-50" style="max-width: 650px; font-size: 0.95rem; line-height: 1.6;">
-                                Somos la plataforma radial y de información digital líder en el país. Llevamos entretenimiento, 
-                                buena música y noticias de última hora con los más altos estándares técnicos directamente 
-                                a tu dispositivo, sin cortes y sin complicaciones.
-                            </p>
-                            
-                            <hr class="border-secondary my-4 mx-auto" style="max-width: 300px;">
-                            
-                            <div class="d-flex justify-content-center gap-3">
-                                <a href="#" class="btn btn-outline-light btn-sm rounded-circle" style="width: 35px; height:35px;"><i class="fab fa-facebook-f mt-1"></i></a>
-                                <a href="#" class="btn btn-outline-light btn-sm rounded-circle" style="width: 35px; height:35px;"><i class="fab fa-instagram mt-1"></i></a>
-                                <a href="#" class="btn btn-outline-light btn-sm rounded-circle" style="width: 35px; height:35px;"><i class="fab fa-tiktok mt-1"></i></a>
-                                <a href="#" class="btn btn-outline-light btn-sm rounded-circle" style="width: 35px; height:35px;"><i class="fab fa-whatsapp mt-1"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-
-
-
-    // Variable global para controlar el intervalo de actualización de noticias
-let intervaloNoticias = null;
-
-// 1. FUNCIÓN: Reportar Caída de Señal
-function reportarCaidaSenal(boton) {
-    const textoOriginal = boton.innerHTML;
-    boton.disabled = true;
-    boton.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Reconectando streaming...`;
-
-    // Simulamos que reiniciamos la lógica del reproductor de audio
-    if (typeof audioPlayer !== 'undefined' && audioPlayer.src) {
-        const currentSrc = audioPlayer.src;
-        audioPlayer.src = ''; // Limpiamos buffer
-        audioPlayer.load();
-        audioPlayer.src = currentSrc; // Reasignamos la señal
-        audioPlayer.play().catch(e => console.log("Espera interacción"));
-    }
-
-    // Efecto visual de éxito tras 1.5 segundos
-    setTimeout(() => {
-        boton.className = "btn btn-success btn-sm w-100 fw-bold";
-        boton.innerHTML = `<i class="fas fa-check me-1"></i> ¡Señal Restablecida!`;
-        
-        // Volver al estado original después de un momento
-        setTimeout(() => {
-            boton.className = "btn btn-warning btn-sm w-100 fw-bold";
-            boton.innerHTML = textoOriginal;
-            boton.disabled = false;
-        }, 3000);
-    }, 1500);
-}
-
-// 2. FUNCIÓN: Limpiador de Caché de la App
-function limpiarCacheApp(boton) {
-    if (confirm("¿Estás seguro de que deseas optimizar la app? Se borrarán imágenes almacenadas en caché.")) {
-        boton.disabled = true;
-        boton.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Optimizando almacenamiento...`;
-
-        // Borramos localStorage y caché del navegador si existen
-        localStorage.clear();
-        if ('caches' in window) {
-            caches.keys().then(names => {
-                for (let name of names) caches.delete(name);
-            });
-        }
-
-        setTimeout(() => {
-            boton.className = "btn btn-success btn-sm w-100 fw-bold";
-            boton.innerHTML = `<i class="fas fa-sparkles me-1"></i> ¡Aplicación Optimizada!`;
-            alert("Caché liberada con éxito. La aplicación ahora está más ligera.");
-            
-            setTimeout(() => {
-                boton.className = "btn btn-outline-danger btn-sm w-100 fw-bold";
-                boton.innerHTML = `<i class="fas fa-broom me-1"></i> Limpiar Caché y Datos`;
-                boton.disabled = false;
-            }, 3000);
-        }, 2000);
-    }
-}
-
-
-    // 3. Gestionamos los indicadores de los menús activos
-    document.querySelectorAll('.nav-link').forEach(e => e.classList.remove('active', 'text-warning'));
-    document.getElementById("btnAjustes").classList.add("active", "text-warning");
-    document.getElementById("btnAjustesDesktop").classList.add("active", "text-warning");
-}
+		function mostrarAjustes() {
+			// 1. Ocultamos el reproductor de radio central
+			document.getElementById("radio").style.display = "none";
+			
+			// 2. Inyectamos la estructura de ajustes
+			const contenedor = document.getElementById("contenido");
+			contenedor.innerHTML = `
+				<div class="container py-4 text-white" style="margin-bottom: 100px;">
+					<h3 class="text-warning mb-4">
+						<i class="fas fa-sliders-h me-2"></i> Ajustes de la Estación
+					</h3>
+					
+					<div class="row g-4">
+						<div class="col-12 col-md-6">
+							<div class="card bg-dark border-secondary text-white h-100 shadow-lg">
+								<div class="card-body d-flex flex-column">
+									<h5 class="card-title text-warning mb-3">
+										<i class="fas fa-broadcast-tower me-2"></i> Transmisión de Audio
+									</h5>
+									<div class="mt-auto p-3 bg-opacity-10 bg-warning border border-warning rounded">
+										<h6 class="text-warning mb-1 small fw-bold">
+											<i class="fas fa-exclamation-triangle me-1"></i> ¿Problemas con el audio?
+										</h6>
+										<p class="text-light mb-2" style="font-size: 0.85rem;">
+											Si la señal se congeló o no se escucha, fuerza una reconexión inmediata.
+										</p>
+										<button class="btn btn-warning btn-sm w-100 fw-bold" onclick="reportarCaidaSenal(this)">
+											<i class="fas fa-sync-alt me-1"></i> Reconectar Señal
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-12 col-md-6">
+							<div class="card bg-dark border-secondary text-white h-100 shadow-lg">
+								<div class="card-body d-flex flex-column">
+									<h5 class="card-title text-warning mb-3">
+										<i class="fas fa-bolt me-2"></i> Rendimiento y Noticias
+									</h5>
+									<div class="mt-auto p-3 bg-opacity-10 bg-danger border border-danger rounded">
+										<h6 class="text-danger mb-1 small fw-bold">
+											<i class="fas fa-trash-alt me-1"></i> Optimización de espacio
+										</h6>
+										<p class="text-light mb-2" style="font-size: 0.85rem;">
+											Limpia las imágenes y datos temporales guardados por la PWA en tu dispositivo.
+										</p>
+										<button class="btn btn-outline-danger btn-sm w-100 fw-bold" onclick="limpiarCacheApp(this)">
+											<i class="fas fa-broom me-1"></i> Limpiar Caché y Datos
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-12">
+							<div class="card bg-dark border-secondary text-white shadow-lg text-center py-4">
+								<div class="card-body">
+									<div class="mb-3">
+										<i class="fas fa-radio fa-3x text-warning"></i>
+									</div>
+									<h4 class="card-title text-warning mb-2">Radio Station</h4>
+									<p class="text-muted small mb-3">Señal Interactiva v1.0.0 — Ecuador</p>
+									
+									<p class="card-text mx-auto text-light-50" style="max-width: 650px; font-size: 0.95rem; line-height: 1.6;">
+										Somos la plataforma radial y de información digital líder en el país. Llevamos entretenimiento, 
+										buena música y noticias de última hora con los más altos estándares técnicos directamente 
+										a tu dispositivo, sin cortes y sin complicaciones.
+									</p>
+									
+									<hr class="border-secondary my-4 mx-auto" style="max-width: 300px;">
+									
+									<div class="d-flex justify-content-center gap-3">
+										<a href="#" class="btn btn-outline-light btn-sm rounded-circle" style="width: 35px; height:35px;"><i class="fab fa-facebook-f mt-1"></i></a>
+										<a href="#" class="btn btn-outline-light btn-sm rounded-circle" style="width: 35px; height:35px;"><i class="fab fa-instagram mt-1"></i></a>
+										<a href="#" class="btn btn-outline-light btn-sm rounded-circle" style="width: 35px; height:35px;"><i class="fab fa-tiktok mt-1"></i></a>
+										<a href="#" class="btn btn-outline-light btn-sm rounded-circle" style="width: 35px; height:35px;"><i class="fab fa-whatsapp mt-1"></i></a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			`;
+			
+			// Activar menú
+			activarMenu("btnAjustes");
+		}
 
 
 
-// Inicializar
-updateLiveStatus();
-updateSliderColor();
-//updateStatus("Listo", "text-muted");
+		// ============================================
+		// RECONECTAR SEÑAL (funciona de verdad)
+		// ============================================
+		function reportarCaidaSenal(boton) {
+			const textoOriginal = boton.innerHTML;
+			
+			boton.disabled = true;
+			boton.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Reconectando streaming...`;
+			
+			// Cancelar cualquier reconexión automática pendiente
+			if (reconnectTimeout) {
+				clearTimeout(reconnectTimeout);
+				reconnectTimeout = null;
+			}
+			
+			// Forzar reconexión real del stream
+			try {
+				audio.pause();
+				audio.src = "";               // limpiar buffer
+				audio.load();
+				
+				// Reasignar la URL del stream
+				audio.src = streamUrl + "?t=" + Date.now(); // evita caché del navegador
+				audio.volume = currentVolume;
+				
+				// Intentar reproducir
+				audio.play().then(() => {
+					isPlaying = true;
+					playIcon.classList.replace('fa-play', 'fa-pause');
+					reconnectAttempts = 0;
+					updateLiveStatus();
+					
+					// Éxito visual
+					boton.className = "btn btn-success btn-sm w-100 fw-bold";
+					boton.innerHTML = `<i class="fas fa-check me-1"></i> ¡Señal Restablecida!`;
+					
+					setTimeout(() => {
+						boton.className = "btn btn-warning btn-sm w-100 fw-bold";
+						boton.innerHTML = textoOriginal;
+						boton.disabled = false;
+					}, 2500);
+					
+				}).catch((err) => {
+					console.error("Error al reconectar:", err);
+					boton.className = "btn btn-danger btn-sm w-100 fw-bold";
+					boton.innerHTML = `<i class="fas fa-times me-1"></i> Error al reconectar`;
+					
+					setTimeout(() => {
+						boton.className = "btn btn-warning btn-sm w-100 fw-bold";
+						boton.innerHTML = textoOriginal;
+						boton.disabled = false;
+					}, 3000);
+				});
+				
+			} catch (e) {
+				console.error(e);
+				boton.disabled = false;
+				boton.innerHTML = textoOriginal;
+			}
+		}
+
+		// ============================================
+		// LIMPIAR CACHÉ Y DATOS (PWA)
+		// ============================================
+		async function limpiarCacheApp(boton) {
+			if (!confirm("¿Estás seguro de que deseas optimizar la app?\nSe borrarán imágenes y datos temporales guardados.")) {
+				return;
+			}
+			
+			const textoOriginal = boton.innerHTML;
+			boton.disabled = true;
+			boton.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Optimizando almacenamiento...`;
+			
+			try {
+				// 1. Limpiar localStorage y sessionStorage
+				localStorage.clear();
+				sessionStorage.clear();
+				
+				// 2. Limpiar todas las caches de la PWA
+				if ('caches' in window) {
+					const names = await caches.keys();
+					await Promise.all(names.map(name => caches.delete(name)));
+				}
+				
+				// 3. Intentar borrar IndexedDB (si existe)
+				if ('indexedDB' in window && indexedDB.databases) {
+					const dbs = await indexedDB.databases();
+					await Promise.all(dbs.map(db => {
+						return new Promise((resolve) => {
+							const req = indexedDB.deleteDatabase(db.name);
+							req.onsuccess = resolve;
+							req.onerror = resolve;
+							req.onblocked = resolve;
+						});
+					}));
+				}
+				
+				// Éxito visual
+				boton.className = "btn btn-success btn-sm w-100 fw-bold";
+				boton.innerHTML = `<i class="fas fa-check me-1"></i> ¡Aplicación Optimizada!`;
+				
+				setTimeout(() => {
+					alert("Caché liberada con éxito.\nLa aplicación ahora está más ligera.");
+					
+					// Opcional: recargar para aplicar cambios
+					// location.reload();
+					
+					boton.className = "btn btn-outline-danger btn-sm w-100 fw-bold";
+					boton.innerHTML = textoOriginal;
+					boton.disabled = false;
+				}, 1800);
+				
+			} catch (error) {
+				console.error("Error al limpiar caché:", error);
+				boton.className = "btn btn-danger btn-sm w-100 fw-bold";
+				boton.innerHTML = `<i class="fas fa-times me-1"></i> Error al limpiar`;
+				
+				setTimeout(() => {
+					boton.className = "btn btn-outline-danger btn-sm w-100 fw-bold";
+					boton.innerHTML = textoOriginal;
+					boton.disabled = false;
+				}, 2500);
+			}
+		}
+
+		// Inicializar
+		updateLiveStatus();
+		updateSliderColor();
+		//updateStatus("Listo", "text-muted");
 
 
