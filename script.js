@@ -492,8 +492,7 @@ async function cargarNoticias() {
 									<div class="mb-3">
 										<i class="fas fa-radio fa-3x text-warning"></i>
 									</div>
-									<h4 class="card-title text-warning mb-2">Radio Station</h4>
-									<p class="text-muted small mb-3">Señal Interactiva v1.0.0 — Ecuador</p>
+									<h4 class="card-title text-warning mb-2">Frecuencia Manabita</h4>
 									
 									<p class="card-text mx-auto text-light-50" style="max-width: 650px; font-size: 0.95rem; line-height: 1.6;">
 										Somos la plataforma radial y de información digital líder en el país. Llevamos entretenimiento, 
