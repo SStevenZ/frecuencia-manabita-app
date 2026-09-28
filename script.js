@@ -20,6 +20,35 @@ audio.src = streamUrl;
 audio.volume = currentVolume;
 volumeSlider.value = currentVolume;
 
+
+// ============================================
+// INSTALAR PWA
+// ============================================
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Evita que el navegador muestre el banner automático
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Mostrar el botón si estamos en la pantalla de Ajustes
+    const btnInstalar = document.getElementById('btnInstalarPWA');
+    if (btnInstalar) {
+        btnInstalar.style.display = 'block';
+    }
+});
+
+// Detectar si ya está instalada
+window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    const btnInstalar = document.getElementById('btnInstalarPWA');
+    if (btnInstalar) {
+        btnInstalar.style.display = 'none';
+    }
+});
+
+
+
 // ---------------------------------------------------
 // FUNCION PARA ACTUALIZAR TRANSMISION DE AUDIO
 
@@ -485,6 +514,30 @@ async function cargarNoticias() {
 								</div>
 							</div>
 						</div>
+
+						<div class="col-12">
+						    <div class="card bg-dark border-secondary text-white shadow-lg">
+						        <div class="card-body">
+						            <h5 class="card-title text-warning mb-3">
+						                <i class="fas fa-mobile-alt me-2"></i> Instalar Aplicación
+						            </h5>
+						            <p class="text-light mb-3" style="font-size: 0.9rem;">
+						                Instala Frecuencia Manabita en tu dispositivo para acceder más rápido y usarla sin conexión.
+						            </p>
+						            <button id="btnInstalarPWA" 
+						                    class="btn btn-outline-warning btn-sm w-100 fw-bold" 
+						                    onclick="instalarPWA(this)"
+						                    style="display: none;">
+						                <i class="fas fa-download me-1"></i> Instalar App
+						            </button>
+						            
+						            <!-- Mensaje cuando ya está instalada -->
+						            <div id="yaInstalada" class="text-success small" style="display: none;">
+						                <i class="fas fa-check-circle me-1"></i> La aplicación ya está instalada
+						            </div>
+						        </div>
+						    </div>
+						</div>
 						
 						<div class="col-12">
 							<div class="card bg-dark border-secondary text-white shadow-lg text-center py-4">
@@ -517,6 +570,22 @@ async function cargarNoticias() {
 			
 			// Activar menú
 			activarMenu("btnAjustes");
+
+						// Controlar visibilidad del botón de instalar
+			const btnInstalar = document.getElementById('btnInstalarPWA');
+			const yaInstalada = document.getElementById('yaInstalada');
+			
+			if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+			    // Ya está instalada
+			    if (btnInstalar) btnInstalar.style.display = 'none';
+			    if (yaInstalada) yaInstalada.style.display = 'block';
+			} else if (deferredPrompt) {
+			    // Se puede instalar
+			    if (btnInstalar) btnInstalar.style.display = 'block';
+			} else {
+			    // Aún no se puede (el evento beforeinstallprompt no ha llegado)
+			    if (btnInstalar) btnInstalar.style.display = 'none';
+			}
 		}
 
 
@@ -645,6 +714,45 @@ async function cargarNoticias() {
 				}, 2500);
 			}
 		}
+
+
+async function instalarPWA(boton) {
+    // Si ya está instalada
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+        alert('La aplicación ya está instalada en tu dispositivo.');
+        return;
+    }
+
+    if (!deferredPrompt) {
+        alert('La instalación no está disponible en este momento.\nPrueba abrir la página en Chrome o Edge.');
+        return;
+    }
+
+    const textoOriginal = boton.innerHTML;
+    boton.disabled = true;
+    boton.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Instalando...`;
+
+    // Mostrar el prompt nativo del navegador
+    deferredPrompt.prompt();
+
+    const { outcome } = await deferredPrompt.userChoice;
+
+    if (outcome === 'accepted') {
+        boton.className = "btn btn-success btn-sm w-100 fw-bold";
+        boton.innerHTML = `<i class="fas fa-check me-1"></i> ¡App Instalada!`;
+        
+        setTimeout(() => {
+            boton.style.display = 'none';
+        }, 2000);
+    } else {
+        boton.className = "btn btn-outline-warning btn-sm w-100 fw-bold";
+        boton.innerHTML = textoOriginal;
+        boton.disabled = false;
+    }
+
+    deferredPrompt = null;
+}
+
 
 		// Inicializar
 		updateLiveStatus();
