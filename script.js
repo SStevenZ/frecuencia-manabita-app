@@ -586,7 +586,7 @@ function mostrarAjustes() {
             btnInstalar.style.display = 'block';
         }
     }
-
+}
 // ← AQUÍ TERMINA mostrarAjustes
 
 
@@ -726,9 +726,11 @@ async function instalarPWA(boton) {
     const { outcome } = await deferredPrompt.userChoice;
 
     if (outcome === 'accepted') {
+        localStorage.setItem('pwaInstalada', 'true');   // ← esta línea es importante
+    
         boton.className = "btn btn-success btn-sm w-100 fw-bold";
         boton.innerHTML = `<i class="fas fa-check me-1"></i> ¡App Instalada!`;
-
+    
         setTimeout(() => {
             const tarjeta = document.getElementById('tarjetaInstalar');
             if (tarjeta) {
