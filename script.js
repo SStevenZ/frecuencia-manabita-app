@@ -41,12 +41,16 @@ window.addEventListener('beforeinstallprompt', (e) => {
 // Detectar si ya está instalada
 window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
-    const btnInstalar = document.getElementById('btnInstalarPWA');
-    if (btnInstalar) {
-        btnInstalar.style.display = 'none';
+    
+    // Guardamos que ya se instaló
+    localStorage.setItem('pwaInstalada', 'true');
+    
+    // Ocultar la tarjeta si está visible
+    const tarjeta = document.getElementById('tarjetaInstalar');
+    if (tarjeta) {
+        tarjeta.style.display = 'none';
     }
 });
-
 
 
 // ---------------------------------------------------
@@ -566,19 +570,24 @@ function mostrarAjustes() {
     const tarjetaInstalar = document.getElementById('tarjetaInstalar');
     const btnInstalar = document.getElementById('btnInstalarPWA');
     
-    // Si ya está instalada → ocultar toda la tarjeta
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+    const yaInstalada = 
+        window.matchMedia('(display-mode: standalone)').matches || 
+        window.navigator.standalone === true ||
+        localStorage.getItem('pwaInstalada') === 'true';
+    
+    if (yaInstalada) {
+        // Ya está instalada → ocultar toda la tarjeta
         if (tarjetaInstalar) {
             tarjetaInstalar.style.display = 'none';
         }
-    } 
-    // Si se puede instalar → mostrar el botón
-    else if (deferredPrompt) {
+    } else if (deferredPrompt) {
+        // Se puede instalar → mostrar el botón
         if (btnInstalar) {
             btnInstalar.style.display = 'block';
         }
     }
-}   // ← AQUÍ TERMINA mostrarAjustes
+
+// ← AQUÍ TERMINA mostrarAjustes
 
 
 // ============================================
