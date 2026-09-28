@@ -346,7 +346,7 @@ function activarMenu(menu) {
 // MOSTRAR NOTICIAS DE DIVERSAS PAGINAS Y CLASIFICAR POR CATEGORIA
 
 
-const URL_WORKER = "https://still-mountain-27bb.2143emilio.workers.dev";
+const URL_WORKER = "https://late-dust-a373.frecuenciamanabita2026.workers.dev/";
 
 // Diccionario para asignarle un icono de FontAwesome a cada categoría automáticamente
 const iconosCategorias = {
@@ -515,7 +515,7 @@ async function cargarNoticias() {
 							</div>
 						</div>
 
-						<div class="col-12">
+						<div class="col-12" id="tarjetaInstalar">
 						    <div class="card bg-dark border-secondary text-white shadow-lg">
 						        <div class="card-body">
 						            <h5 class="card-title text-warning mb-3">
@@ -530,11 +530,6 @@ async function cargarNoticias() {
 						                    style="display: none;">
 						                <i class="fas fa-download me-1"></i> Instalar App
 						            </button>
-						            
-						            <!-- Mensaje cuando ya está instalada -->
-						            <div id="yaInstalada" class="text-success small" style="display: none;">
-						                <i class="fas fa-check-circle me-1"></i> La aplicación ya está instalada
-						            </div>
 						        </div>
 						    </div>
 						</div>
@@ -571,22 +566,24 @@ async function cargarNoticias() {
 			// Activar menú
 			activarMenu("btnAjustes");
 
-						// Controlar visibilidad del botón de instalar
+
+
+			// Controlar visibilidad de la tarjeta de instalar
+			const tarjetaInstalar = document.getElementById('tarjetaInstalar');
 			const btnInstalar = document.getElementById('btnInstalarPWA');
-			const yaInstalada = document.getElementById('yaInstalada');
 			
-			if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-			    // Ya está instalada
-			    if (btnInstalar) btnInstalar.style.display = 'none';
-			    if (yaInstalada) yaInstalada.style.display = 'block';
-			} else if (deferredPrompt) {
-			    // Se puede instalar
-			    if (btnInstalar) btnInstalar.style.display = 'block';
-			} else {
-			    // Aún no se puede (el evento beforeinstallprompt no ha llegado)
-			    if (btnInstalar) btnInstalar.style.display = 'none';
+			// Si ya está instalada → ocultar toda la tarjeta
+			if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+			    if (tarjetaInstalar) {
+			        tarjetaInstalar.style.display = 'none';
+			    }
+			} 
+			// Si se puede instalar → mostrar el botón
+			else if (deferredPrompt) {
+			    if (btnInstalar) {
+			        btnInstalar.style.display = 'block';
+			    }
 			}
-		}
 
 
 
@@ -716,42 +713,42 @@ async function cargarNoticias() {
 		}
 
 
-async function instalarPWA(boton) {
-    // Si ya está instalada
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-        alert('La aplicación ya está instalada en tu dispositivo.');
-        return;
-    }
-
-    if (!deferredPrompt) {
-        alert('La instalación no está disponible en este momento.\nPrueba abrir la página en Chrome o Edge.');
-        return;
-    }
-
-    const textoOriginal = boton.innerHTML;
-    boton.disabled = true;
-    boton.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Instalando...`;
-
-    // Mostrar el prompt nativo del navegador
-    deferredPrompt.prompt();
-
-    const { outcome } = await deferredPrompt.userChoice;
-
-    if (outcome === 'accepted') {
-        boton.className = "btn btn-success btn-sm w-100 fw-bold";
-        boton.innerHTML = `<i class="fas fa-check me-1"></i> ¡App Instalada!`;
-        
-        setTimeout(() => {
-            boton.style.display = 'none';
-        }, 2000);
-    } else {
-        boton.className = "btn btn-outline-warning btn-sm w-100 fw-bold";
-        boton.innerHTML = textoOriginal;
-        boton.disabled = false;
-    }
-
-    deferredPrompt = null;
-}
+		async function instalarPWA(boton) {
+		    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+		        return;
+		    }
+		
+		    if (!deferredPrompt) {
+		        alert('La instalación no está disponible en este momento.\nPrueba abrir la página en Chrome o Edge.');
+		        return;
+		    }
+		
+		    const textoOriginal = boton.innerHTML;
+		    boton.disabled = true;
+		    boton.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Instalando...`;
+		
+		    deferredPrompt.prompt();
+		    const { outcome } = await deferredPrompt.userChoice;
+		
+		    if (outcome === 'accepted') {
+		        boton.className = "btn btn-success btn-sm w-100 fw-bold";
+		        boton.innerHTML = `<i class="fas fa-check me-1"></i> ¡App Instalada!`;
+		
+		        // Ocultar toda la tarjeta después de instalar
+		        setTimeout(() => {
+		            const tarjeta = document.getElementById('tarjetaInstalar');
+		            if (tarjeta) {
+		                tarjeta.style.display = 'none';
+		            }
+		        }, 1500);
+		    } else {
+		        boton.className = "btn btn-outline-warning btn-sm w-100 fw-bold";
+		        boton.innerHTML = textoOriginal;
+		        boton.disabled = false;
+		    }
+		
+		    deferredPrompt = null;
+		}
 
 
 		// Inicializar
