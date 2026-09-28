@@ -522,7 +522,7 @@ async function cargarNoticias() {
 						                <i class="fas fa-mobile-alt me-2"></i> Instalar Aplicación
 						            </h5>
 						            <p class="text-light mb-3" style="font-size: 0.9rem;">
-						                Instala Frecuencia Manabita en tu dispositivo para acceder más rápido y usarla sin conexión.
+						                Instala Frecuencia Manabita en tu dispositivo para acceder más rápido.
 						            </p>
 						            <button id="btnInstalarPWA" 
 						                    class="btn btn-outline-warning btn-sm w-100 fw-bold" 
